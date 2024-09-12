@@ -1,0 +1,54 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  questions Question[]
+  answers   Answer[]
+  comments  Comment[]
+}
+
+model Question {
+  id        Int       @id @default(autoincrement())
+  title     String
+  body      String
+  createdAt DateTime  @default(now())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  answers   Answer[]
+  comments  Comment[]
+  score     Int       @default(0)
+}
+
+model Answer {
+  id        Int       @id @default(autoincrement())
+  body      String
+  createdAt DateTime  @default(now())
+  questionId Int
+  question  Question  @relation(fields: [questionId], references: [id])
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  comments  Comment[]
+  score     Int       @default(0)
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  body      String
+  createdAt DateTime  @default(now())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  questionId Int?
+  question  Question? @relation(fields: [questionId], references: [id])
+  answerId  Int?
+  answer    Answer?   @relation(fields: [answerId], references: [id])
+}
