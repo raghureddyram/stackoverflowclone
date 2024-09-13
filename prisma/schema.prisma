@@ -16,6 +16,8 @@ model User {
   answers   Answer[]
   comments  Comment[]
   archivedAt DateTime?
+
+  @@index([archivedAt])
 }
 
 model Question {
@@ -28,6 +30,8 @@ model Question {
   answers   Answer[]
   comments  Comment[]
   score     Int       @default(0)
+  
+  @@index([userId])
 }
 
 model Answer {
@@ -40,6 +44,9 @@ model Answer {
   user      User      @relation(fields: [userId], references: [id])
   comments  Comment[]
   score     Int       @default(0)
+
+  @@index([userId])
+  @@index([questionId])
 }
 
 model Comment {
@@ -52,4 +59,8 @@ model Comment {
   question  Question? @relation(fields: [questionId], references: [id])
   answerId  Int?
   answer    Answer?   @relation(fields: [answerId], references: [id])
+
+  @@index([userId])
+  @@index([questionId])
+  @@index([answerId])
 }

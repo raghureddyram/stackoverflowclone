@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   archivedAt: null,  // Only get answers where the user's archivedAt is null
                 },
               },
-          include: { user: true, answers: true },
+          include: { user: { select: {id: true, name: true}}, comments: {include: {user:  {select: {id: true, name: true}}}, where: {user: {archivedAt: null}}}, answers: {include: {user:  {select: {id: true, name: true}}},  where: {user: {archivedAt: null}}} },
         });
         res.status(200).json(questions);
       } catch (error) {

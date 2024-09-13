@@ -1,4 +1,3 @@
-// pages/api/answers/index.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 
@@ -7,11 +6,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const answers = await prisma.answer.findMany({
         where: {
-            user: {
-              archivedAt: null,  // Only get answers where the user's archivedAt is null
-            },
+          user: {
+            archivedAt: null,  // Only get answers where the user's archivedAt is null
           },
-        include: { question: true, user: true },
+        },
+        include: { 
+            user: { 
+                select: { id: true, name: true } 
+            },
+            question: {
+                include: {
+                    user: { 
+                        select: { id: true, name: true } 
+                    }}
+            }, 
+            comments: {
+                include: {
+                    user: { 
+                        select: { id: true, name: true }
+                    },
+                },
+            }
+        },
       });
       res.status(200).json(answers);
     } catch (error) {
@@ -34,6 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       res.status(500).json({ error: 'Unable to create answer' });
     }
+  } else {
+    res.status(405).end(); // Method Not Allowed
   }
 }
 
