@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const hasQuestions = await prisma.question.findMany()
-  if( hasQuestions){
+  if( hasQuestions && hasQuestions.length){
     console.log("SEEDS FOUND, SKIPPING SEED STEP")
     return
   }
