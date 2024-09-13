@@ -23,9 +23,9 @@ services:
 
   prisma-studio:
     image: node:16  
-    working_dir: /app
+    working_dir: /
     volumes:
-      - .:/app
+      - .:/
     ports:
       - "5555:5555"
     environment:
