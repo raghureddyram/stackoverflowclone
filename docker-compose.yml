@@ -4,11 +4,11 @@ services:
     build:
       context: .
       args:
-        DATABASE_URL: postgresql://postgres:password@db:5432/stackoverflowclone?schema=public
+        DATABASE_URL: postgresql://postgres:password@db:5432/stackoverflowclone
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://postgres:password@db:5432/stackoverflowclone?schema=public
+      DATABASE_URL: postgresql://postgres:password@db:5432/stackoverflowclone
     depends_on:
       - db
 
@@ -20,6 +20,19 @@ services:
       POSTGRES_DB: stackoverflowclone
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  prisma-studio:
+    image: node:16  
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5555:5555"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/stackoverflowclone  # Same database URL
+    command: "npx prisma studio --port 5555"  # Automatically run Prisma Studio
+    depends_on:
+      - app
 
 volumes:
   postgres_data:

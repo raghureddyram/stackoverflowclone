@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { findAllUsers, createUser } from './_userRepository';
+import { findAllActiveUsers, createUser } from './_userRepository';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const users = await findAllUsers();  // Use the repository function
+            const users = await findAllActiveUsers();  // Use the repository function
             res.status(200).json(users);
         } catch (error) {
             res.status(500).json({ error: 'Unable to fetch users' });
