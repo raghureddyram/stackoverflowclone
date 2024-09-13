@@ -4,6 +4,12 @@ const data = require('./data.json');  // Assuming you saved the JSON to a file c
 const prisma = new PrismaClient();
 
 async function main() {
+  const hasQuestions = await prisma.question.findMany()
+  if( hasQuestions){
+    console.log("SEEDS FOUND, SKIPPING SEED STEP")
+    return
+  }
+  console.log("ATTEMPTING SEED STEP")
   for (const item of data) {
     // Upsert the user who asked the question
     const user = await prisma.user.upsert({
