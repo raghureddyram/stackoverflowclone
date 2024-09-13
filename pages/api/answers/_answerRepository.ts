@@ -68,12 +68,13 @@ export async function findAllAnswersForActiveUserQuestions() {
 
 
 
-export async function createAnswer(body: string, userId: number, questionId: number) {
+export async function createAnswer(body: string, userId: number, questionId: number, accepted?: boolean) {
     return await prisma.answer.create({
         data: {
             body,
             userId,
             questionId,
+            accepted: !!accepted
         },
     });
 }
