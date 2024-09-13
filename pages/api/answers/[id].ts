@@ -1,21 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../../lib/prisma';
+import {findAnswerWithQuestion, updateAnswer, deleteAnswer} from "./_answerRepository"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query; 
+  const id = req.query.id as string | undefined;
+  if (!id || typeof id !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid id' });
+  }
 
   if (req.method === 'GET') {
     try {
-      const answer = await prisma.answer.findUnique({
-        where: { id: Number(id) },  // Convert id to a number
-        include: { question: true, user: true },  // Include related data
-      });
+        const answer = await findAnswerWithQuestion(id);
+        if (!answer) {
+            return res.status(404).json({ error: 'Answer not found' });
+        }
 
-      if (!answer) {
-        return res.status(404).json({ error: 'Answer not found' });
-      }
-
-      res.status(200).json(answer);
+        res.status(200).json(answer);
     } catch (error) {
       res.status(500).json({ error: 'Unable to fetch answer' });
     }
@@ -26,18 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      
-      const updatedAnswer = await prisma.answer.update({
-        where: {
-          id: Number(id),
-        },
-        data: {
-          body,
-          userId,
-          questionId,
-          score,
-        },
-      });
+      const updatedAnswer = await updateAnswer(id, body, userId, questionId, score)
 
       res.status(200).json(updatedAnswer);
     } catch (error) {
@@ -45,10 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'DELETE') {
     try {
-      
-      await prisma.answer.delete({
-        where: { id: Number(id) },
-      });
+      await deleteAnswer(id)
 
       res.status(204).end();  // No Content
     } catch (error) {
