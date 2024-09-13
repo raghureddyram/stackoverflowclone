@@ -19,13 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ error: 'Unable to fetch answer' });
     }
   } else if (req.method === 'PUT') {
-    const { body, userId, questionId, score } = req.body;
+    const { body, userId, questionId, score, accepted } = req.body;
     if (!body || !userId || !questionId) {
       return res.status(400).json({ error: 'Missing fields' });
     }
 
     try {
-      const updatedAnswer = await updateAnswer(id, body, userId, questionId, score)
+      const updatedAnswer = await updateAnswer(id, body, userId, questionId, score, accepted)
 
       res.status(200).json(updatedAnswer);
     } catch (error) {

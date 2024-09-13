@@ -9,16 +9,17 @@ export async function findAnswerWithQuestion(id: string){
     return answer;
 }
 
-export async function updateAnswer(id: string, body: string, userId: number, questionId: number, score?: number){
+export async function updateAnswer(id: string, body: string, userId: number, questionId: number, score?: number, accepted?: boolean){
     const updatedAnswer = await prisma.answer.update({
         where: {
-        id: Number(id),
+            id: Number(id),
         },
         data: {
-        body,
-        userId,
-        questionId,
-        score,
+            body,
+            userId,
+            questionId,
+            score,
+            accepted
         },
     });
     return updatedAnswer;
