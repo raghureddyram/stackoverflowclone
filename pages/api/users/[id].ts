@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const user = await prisma.user.findUnique({
-        where: { id: Number(id) },
+        where: { id: Number(id), archivedAt: null },
         include: { questions: true, answers: true, comments: true },
       });
 
@@ -43,12 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'DELETE') {
     try {
       // Delete the user by their id
-      await prisma.user.delete({
-        where: { id: Number(id) },
+      await prisma.user.update({
+        where: {
+            id: Number(id),
+          },
+          data: {
+            archivedAt: new Date()
+          },
       });
 
       res.status(204).end();  // No Content
     } catch (error) {
+        console.log(error)
       res.status(500).json({ error: 'Unable to delete user' });
     }
   } else {

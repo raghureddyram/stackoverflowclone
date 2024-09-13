@@ -6,6 +6,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const answers = await prisma.answer.findMany({
+        where: {
+            user: {
+              archivedAt: null,  // Only get answers where the user's archivedAt is null
+            },
+          },
         include: { question: true, user: true },
       });
       res.status(200).json(answers);

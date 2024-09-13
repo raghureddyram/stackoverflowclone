@@ -15,6 +15,7 @@ model User {
   questions Question[]
   answers   Answer[]
   comments  Comment[]
+  archivedAt DateTime?
 }
 
 model Question {
