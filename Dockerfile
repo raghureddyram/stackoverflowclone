@@ -25,9 +25,8 @@ ARG DATABASE_URL
 # Make the DATABASE_URL available to Prisma during the build
 ENV DATABASE_URL=${DATABASE_URL}
 
-# Run Prisma generate and migration steps with DATABASE_URL set explicitly
-RUN DATABASE_URL=${DATABASE_URL} npx prisma generate
+CMD DATABASE_URL=${DATABASE_URL} npx prisma generate && npx prisma migrate deploy && npm run seed && npm run start
 
-CMD DATABASE_URL=${DATABASE_URL} npx prisma migrate deploy && npm run seed && npm run start
+
 
 
